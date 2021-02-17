@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet"  href="/static/plugins/bootstrap-3.3.7-dist/css/bootstrap.css"/>
+</head>
+<body>
+    <table class="table table-hover table-bordered">
+    <tr>
+        <th>测量设备名称</th>
+        <th>型号</th>
+        <th>量程</th>
+        <th>精度</th>
+        <th>生产厂家</th>
+        <th>启用日期</th>
+        <th>器具编号</th>
+        <th>本厂编号</th>
+        <th>检定部门</th>
+        <th>检定周期</th>
+        <th>检定日期</th>
+        <th>有效期至</th>
+        <th>检定结果</th>
+        <th>分类</th>
+        <th>使用部门</th>
+        <th>备注</th>
+    </tr>
+        {% for date in dates %}
+    <tr>
+        <td>{{ date.device_name }}</td>
+        <td>{{ date.device_model }}</td>
+        <td>{{ date.device_range }}</td>
+        <td>{{ date.device_precision }}</td>
+        <td>{{ date.manufacturer }}</td>
+        <td>{{ date.Commissioning_date|date:"Y-m-d"}}</td>
+        <td>{{ date.device_number }}</td>
+        <td>{{ date.device_factory_number }}</td>
+        <td>{{ date.calibration_department }}</td>
+        <td>{{ date.calibration_cycle }}</td>
+        <td>{{ date.calibration_time|date:"Y-m-d"}}</td>
+        <td>{{ date.expire_time|date:"Y-m-d" }}</td>
+        <td>{{ date.jieguo_type }}</td>
+        <td>{{ date.device_type }}</td>
+        <td>{{ date.device_user_department }}</td>
+        <td>{{ date.node }}</td>
+
+    </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

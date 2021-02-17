@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/plugins/bootstrap-3.3.7-dist/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/static/plugins/font-awesome-4.7.0/css/font-awesome.css"/>
+    <link rel="stylesheet" href="/static/css/management-css.css" type="text/css"/>
+    <script src="/static/jquery-3.5.1.js"></script>
+
+</head>
+<body>
+{% block include-css %}
+
+{% endblock include-css %}
+<div class="pg-header">
+    <div class="logo left1">刘凤林后台管理</div>
+    <div class="avatar right1" style="position: relative;">
+        <img src="/static/image/user-headportrait.jpg">
+        <div class="user-info">
+            <a><i class="fa fa-id-card" aria-hidden="true"></i> 个人资料</a>
+            <a href="/logout/"><i class="fa fa-sign-out" aria-hidden="true"></i> 账号注销</a>
+        </div>
+    </div>
+    <div class="rmenus right">
+        <a><i class="fa fa-commenting" aria-hidden="true"></i> 消息</a>
+        <a><i class="fa fa-envelope" aria-hidden="true"></i> 邮件</a>
+    </div>
+</div>
+<div class="pg-body">
+    <div class="menus">
+        <a href=""><i class="fa fa-child" aria-hidden="true"></i> 学生列表</a>
+        <a href=""><i class="fa fa-book" aria-hidden="true"></i> 班级列表</a>
+        <a href="" class="fa fa-male" aria-hidden="true"></i> 教师列表</a>
+    </div>
+    <div class="content">
+        {% block content %}
+            <ol class="breadcrumb">
+              <li><a>Home</a></li>
+              <li class="active">Home</li>
+            </ol>
+            <h3>欢迎登录管理系统</h3>
+        {% endblock content %}
+    </div>
+</div>
+
+{% block include-js %}
+    <script src="/static/plugins/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+{% endblock include-js %}
+</body>
+</html>
+
