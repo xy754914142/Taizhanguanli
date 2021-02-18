@@ -117,3 +117,8 @@ def equipment_parameter(request,page):
     page_info = PageInfo(page, Taizhang.objects.all().count(), 15, '/equipment_parameter/', 11)
     class_list = Taizhang.objects.all()[page_info.start():page_info.end()]
     return render(request,'shebei_guanli/index.html',{'dates':class_list,'page_info':page_info})
+
+def search(request):
+    sc = request.POST.get('search_text')
+    print(sc)
+    return HttpResponse('...')

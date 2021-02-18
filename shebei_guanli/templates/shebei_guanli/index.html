@@ -11,17 +11,17 @@
 <div class="row">
   <div class="col-lg-6">
     <div class="input-group">
-      <div>
-            <select class="selectpicker">
-              <option value ="volvo">Volvo</option>
-              <option value ="saab">Saab</option>
-              <option value="opel">Opel</option>
-              <option value="audi">Audi</option>
-            </select>
-      </div><!-- /btn-group -->
-      <input type="text" class="form-control" aria-label="...">
+{#      <div>#}
+{#            <select class="selectpicker">#}
+{#              <option value ="volvo">Volvo</option>#}
+{#              <option value ="saab">Saab</option>#}
+{#              <option value="opel">Opel</option>#}
+{#              <option value="audi">Audi</option>#}
+{#            </select>#}
+{#      </div><!-- /btn-group -->#}
+      <input type="text" class="form-control"  aria-label="请输入搜索内容" id="search_text" name="search_text">
               <span class="input-group-btn">
-        <button class="btn btn-default" type="button">Go!</button>
+        <button class="btn btn-default" type="button" id="search_bt">Go!</button>
       </span>
     </div><!-- /input-group -->
   </div><!-- /.col-lg-6 -->
@@ -73,9 +73,23 @@
           {{ page_info.page|safe }}
       </ul>
     </nav>
+<script>
+    $('#search_bt').click(function () {
+        $.ajax({
+            type:"POST",
+            url:"/search/",
+            headers:{ "X-CSRFtoken":$.cookie("csrftoken")},
+            data:{search_text:$('#search_text').val()},// 注意csrf随机字符串，后台有固定的名字接收,这种方式是通过标签获取的对应值
+            dataType:"json",
+            success:function (data) {
+                console.log('111');
+            }
+        })
+    })
+</script>
 {% endblock content %}
 
 {% block include-js %}
-    <script src="/static/plugins/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+    <script src="/static/js/index.js"></script>
 {% endblock include-js %}
 
