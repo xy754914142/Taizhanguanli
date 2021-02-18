@@ -4,6 +4,7 @@ $(function () {
 })
 
 function Bindinput() {
+    console.log('start')
     $('#username').blur(function () {
         if($('#username').val().length == 0){
             $('#user_div').addClass('has-error has-feedback');

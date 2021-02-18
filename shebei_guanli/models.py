@@ -1,12 +1,9 @@
 from django.db import models
 
 # Create your models here.
-class Userdate(models.Model):
-    username = models.CharField(max_length=32)
+class UserInfo(models.Model):
+    username = models.CharField(max_length=32, unique=True)
     password = models.CharField(max_length=32)
-
-
-
 class Taizhang(models.Model):
     # calibration_department_choice = (
     #     (0,'公司'),

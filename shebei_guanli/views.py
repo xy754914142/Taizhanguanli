@@ -1,27 +1,64 @@
 from django.shortcuts import render,redirect,reverse
 from django.http import HttpResponse
 from django.views import View
-from .models import Taizhang,Userdate
-
+from .models import Taizhang,UserInfo
+from utils.page import PageInfo
 import openpyxl
+from django.forms import Form
+from django.forms import fields
+
+class MyForm(Form):
+    username = fields.CharField(
+        max_length=16,
+        min_length=6,
+        required=True,
+        error_messages={
+            'max_length':'用户名长度应小于16位',
+            'min_length':'用户名长度应大于6位',
+            'required':'用户名不能为空',
+        })
+    password = fields.CharField(
+        max_length=16,
+        min_length=6,
+        required=True,
+        error_messages={
+            'max_length':'密码长度应小于16位',
+            'min_length':'密码长度应大于6位',
+            'required':'密码不能为空',
+        })
+
 # Create your views here.
 class Login(View):
     def get(self,request):
-        return render(request, 'login.html')
-
+        return render(request,'login.html')
     def post(self,request):
-        user = request.POST.get('username')
-        pwd = request.POST.get('password')
-        userinfo = Userdate.objects.filter(username=user).first()
-
-        if userinfo == None:
-            return redirect(reverse('login'))
-        if userinfo.password == pwd:
-            cook = redirect(reverse('mian_html'))
-            cook.set_signed_cookie('liu', 'fenglin', salt='abc', max_age=10000)
-            return cook
+        v = MyForm(request.POST)
+        if v.is_valid():
+            data = UserInfo.objects.filter(username=v.cleaned_data['username']).first()
+            print(data.password)
+            if v and data.password == v.cleaned_data['password']:
+                    request.session['userinfo'] = {'username': v.cleaned_data['username'],
+                                                   'password': v.cleaned_data['password']}
+                    return redirect('/management.html')
+            else:
+                return render(request, 'login.html', {'erro': v.errors})
         else:
-            return redirect(reverse('login'))
+            return render(request,'login.html',{'erro':v.errors})
+
+def login(func):
+    def wrap(request, *args, **kwargs):
+        if request.session.get('userinfo'):
+            return func(request, *args, **kwargs)
+        else:
+            return redirect('/login/')
+    return wrap
+
+
+
+@login
+def logout(request):
+    request.session.delete()
+    return redirect('/login/')
 
 def management(request):
     return render(request,'management.html')
@@ -68,13 +105,12 @@ class Update(View):
                                     )
                             except:
                                 return HttpResponse('数据添加失败')
-                            else:
-                                return HttpResponse('OK')
 
 
         return HttpResponse('OK')
 
-class Equipment_parameter(View):
-    def get(self,request):
-        dates = Taizhang.objects.all()
-        return render(request,'shebei_guanli/index.html',{'dates':dates})
+
+def equipment_parameter(request,page):
+    page_info = PageInfo(page, Taizhang.objects.all().count(), 10, '/equipment_parameter/', 11)
+    class_list = Taizhang.objects.all()[page_info.start():page_info.end()]
+    return render(request,'shebei_guanli/index.html',{'dates':class_list,'page_info':page_info})
