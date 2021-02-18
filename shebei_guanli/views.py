@@ -6,6 +6,7 @@ from utils.page import PageInfo
 import openpyxl
 from django.forms import Form
 from django.forms import fields
+from django.utils.decorators import method_decorator
 
 class MyForm(Form):
     username = fields.CharField(
@@ -50,7 +51,7 @@ def login(func):
         if request.session.get('userinfo'):
             return func(request, *args, **kwargs)
         else:
-            return redirect('/login/')
+            return redirect(reverse('login'))
     return wrap
 
 
@@ -58,11 +59,13 @@ def login(func):
 @login
 def logout(request):
     request.session.delete()
-    return redirect('/login/')
+    return redirect(reverse('login'))
 
+@login
 def management(request):
     return render(request,'management.html')
 
+@method_decorator(login, name='dispatch')
 class Update(View):
     def get(self,request):
         return render(request,'shebei_guanli/update.html')
@@ -109,8 +112,8 @@ class Update(View):
 
         return HttpResponse('OK')
 
-
+@login
 def equipment_parameter(request,page):
-    page_info = PageInfo(page, Taizhang.objects.all().count(), 10, '/equipment_parameter/', 11)
+    page_info = PageInfo(page, Taizhang.objects.all().count(), 15, '/equipment_parameter/', 11)
     class_list = Taizhang.objects.all()[page_info.start():page_info.end()]
     return render(request,'shebei_guanli/index.html',{'dates':class_list,'page_info':page_info})

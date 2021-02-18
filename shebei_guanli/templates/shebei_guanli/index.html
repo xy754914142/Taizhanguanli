@@ -6,6 +6,27 @@
 
 
 {% block content %}
+
+
+<div class="row">
+  <div class="col-lg-6">
+    <div class="input-group">
+      <div>
+            <select class="selectpicker">
+              <option value ="volvo">Volvo</option>
+              <option value ="saab">Saab</option>
+              <option value="opel">Opel</option>
+              <option value="audi">Audi</option>
+            </select>
+      </div><!-- /btn-group -->
+      <input type="text" class="form-control" aria-label="...">
+              <span class="input-group-btn">
+        <button class="btn btn-default" type="button">Go!</button>
+      </span>
+    </div><!-- /input-group -->
+  </div><!-- /.col-lg-6 -->
+</div><!-- /.row -->
+
     <table class="table table-hover table-bordered">
     <tr>
         <th>测量设备名称</th>
@@ -55,5 +76,6 @@
 {% endblock content %}
 
 {% block include-js %}
+    <script src="/static/plugins/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
 {% endblock include-js %}
 
