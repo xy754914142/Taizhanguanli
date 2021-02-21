@@ -1,16 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "management.html" %}
+
+{% block include-css %}
+
+{% endblock include-css %}
+
+
+{% block content %}
     <form action="{% url 'update' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <input type="file" name="date">
 
         <input type="submit">
-
     </form>
-</body>
-</html>
+
+{% endblock content %}
+
+{% block include-js %}
+
+{% endblock include-js %}
+

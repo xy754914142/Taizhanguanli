@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="/static/plugins/bootstrap-3.3.7-dist/css/bootstrap.css"/>
     <link rel="stylesheet" href="/static/plugins/font-awesome-4.7.0/css/font-awesome.css"/>
     <link rel="stylesheet" href="/static/css/management-css.css" type="text/css"/>
-    <script src="/static/jquery-3.5.1.js"></script>
-    <script src="/static/plugins/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+	<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="/static/jquery.cookie.js"></script>
 </head>
 <body>
 {% block include-css %}
@@ -29,10 +30,11 @@
 </div>
 <div class="pg-body">
     <div class="menus">
-        <a href=""><i class="fa fa-child" aria-hidden="true"></i> 学生列表</a>
-        <a href=""><i class="fa fa-book" aria-hidden="true"></i> 班级列表</a>
-        <a href="" class="fa fa-male" aria-hidden="true"></i> 教师列表</a>
+        <a href="{% url 'equipment_parameter' 1 %}"><i class="fa fa-child" aria-hidden="true"></i>  设备列表</a>
+        <a data-toggle="modal" data-target="#myModal"><i class="fa fa-book" aria-hidden="true"></i>  导入设备</a>
+        <a href="" class="fa fa-male" aria-hidden="true"></i>  教师列表</a>
     </div>
+
     <div class="content">
         {% block content %}
             <ol class="breadcrumb">
@@ -43,11 +45,59 @@
         {% endblock content %}
     </div>
 </div>
-
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					导入设备台账
+				</h4>
+			</div>
+			<div class="modal-body" style="margin-left:20px">
+                    <input type="file" name="date" id="data">
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
+				</button>
+				<button type="button" class="btn btn-primary" id="sub">
+					提交更改
+				</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+</div>
 {% block include-js %}
 
 
 {% endblock include-js %}
 </body>
+<script>
+    $('#sub').click(function () {
+        var file = $('input[type=file]')[0].files[0];
+        var csrf = $('input[name=csrfmiddlewaretoken]').val();
+        var formdata = new FormData();
+        formdata.append('file',file);
+        formdata.append('csrfmiddlewaretoken', csrf);
+        $.ajax({
+            url: "{% url 'update' %}",
+            type: 'post',
+            data: formdata,
+            processData: false,
+            contentType: false,
+            header: {
+                'X-CSRFToken':$.cookie('csrftoken'),
+            },
+            success:function (res) {
+                if(res == '设备添加完成！')
+                    location.reload();
+                alert(res);
+            }
+        })
+    })
+</script>
 </html>
 

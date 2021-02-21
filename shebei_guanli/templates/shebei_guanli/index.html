@@ -7,26 +7,27 @@
 
 {% block content %}
 
+<div>
+{% if ig %}
+    <ol class="breadcrumb">
+      <li><a href="{% url 'equipment_parameter' 1 %}">设备列表</a></li>
+      <li class="active">搜索结果</li>
+    </ol>
+{% else %}
+    <ol class="breadcrumb">
+      <li class="active">设备列表</li>
+    </ol>
+{% endif %}
 
-<div class="row">
-  <div class="col-lg-6">
-    <div class="input-group">
-{#      <div>#}
-{#            <select class="selectpicker">#}
-{#              <option value ="volvo">Volvo</option>#}
-{#              <option value ="saab">Saab</option>#}
-{#              <option value="opel">Opel</option>#}
-{#              <option value="audi">Audi</option>#}
-{#            </select>#}
-{#      </div><!-- /btn-group -->#}
-      <input type="text" class="form-control"  aria-label="请输入搜索内容" id="search_text" name="search_text">
-              <span class="input-group-btn">
-        <button class="btn btn-default" type="button" id="search_bt">Go!</button>
-      </span>
-    </div><!-- /input-group -->
-  </div><!-- /.col-lg-6 -->
-</div><!-- /.row -->
+<form method="post" action="{% url "equipment_parameter" 1 %}" class="navbar-form navbar-left" role="search">
+        {% csrf_token %}
+    <div class="form-group">
+    <input type="text"  aria-label="请输入搜索内容" class="form-control"  id="search_text" name="search_text" value="{{ seacher_text }}">
+    </div>
+    <input type="submit" value="搜索" class="btn btn-default">
+</form>
 
+</div>
     <table class="table table-hover table-bordered">
     <tr>
         <th>测量设备名称</th>
@@ -45,6 +46,7 @@
         <th>分类</th>
         <th>使用部门</th>
         <th>备注</th>
+        <th>操作</th>
     </tr>
         {% for date in dates %}
     <tr>
@@ -64,6 +66,7 @@
         <td>{{ date.device_type }}</td>
         <td>{{ date.device_user_department }}</td>
         <td>{{ date.node }}</td>
+        <td><a href="{% url 'edit' date.device_factory_number %}">编辑</a></td>
 
     </tr>
         {% endfor %}
@@ -73,23 +76,10 @@
           {{ page_info.page|safe }}
       </ul>
     </nav>
-<script>
-    $('#search_bt').click(function () {
-        $.ajax({
-            type:"POST",
-            url:"/search/",
-            headers:{ "X-CSRFtoken":$.cookie("csrftoken")},
-            data:{search_text:$('#search_text').val()},// 注意csrf随机字符串，后台有固定的名字接收,这种方式是通过标签获取的对应值
-            dataType:"json",
-            success:function (data) {
-                console.log('111');
-            }
-        })
-    })
-</script>
+
 {% endblock content %}
 
 {% block include-js %}
-    <script src="/static/js/index.js"></script>
+
 {% endblock include-js %}
 
