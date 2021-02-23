@@ -28,46 +28,45 @@
 </form>
 
 </div>
-    <table class="table table-hover table-bordered">
+    <table class="table table-hover table-bordered" style="table-layout:fixed">
     <tr>
-        <th>测量设备名称</th>
-        <th>型号</th>
-        <th>量程</th>
-        <th>精度</th>
-        <th>生产厂家</th>
-        <th>启用日期</th>
-        <th>器具编号</th>
-        <th>本厂编号</th>
-        <th>检定部门</th>
-        <th>检定周期</th>
-        <th>检定日期</th>
-        <th>有效期至</th>
-        <th>检定结果</th>
-        <th>分类</th>
-        <th>使用部门</th>
-        <th>备注</th>
-        <th>操作</th>
+        <th style="width: 101px">测量设备名称</th>
+        <th >型号</th>
+        <th >量程</th>
+        <th >精度</th>
+        <th >生产厂家</th>
+        <th >启用日期</th>
+        <th style="width: 101px">器具编号</th>
+        <th >本厂编号</th>
+        <th style="width: 73px">检定部门</th>
+        <th style="width: 45px">周期</th>
+        <th >检定日期</th>
+        <th >有效期至</th>
+        <th style="width: 45px">结果</th>
+        <th style="width: 45px">分类</th>
+        <th >使用部门</th>
+        <th >备注</th>
+        <th style="width: 45px">操作</th>
     </tr>
         {% for date in dates %}
     <tr>
-        <td>{{ date.device_name }}</td>
-        <td>{{ date.device_model }}</td>
-        <td>{{ date.device_range }}</td>
-        <td>{{ date.device_precision }}</td>
-        <td>{{ date.manufacturer }}</td>
-        <td>{{ date.Commissioning_date|date:"Y-m-d"}}</td>
-        <td>{{ date.device_number }}</td>
-        <td>{{ date.device_factory_number }}</td>
-        <td>{{ date.calibration_department }}</td>
-        <td>{{ date.calibration_cycle }}</td>
-        <td>{{ date.calibration_time|date:"Y-m-d"}}</td>
-        <td>{{ date.expire_time|date:"Y-m-d" }}</td>
-        <td>{{ date.jieguo_type }}</td>
-        <td>{{ date.device_type }}</td>
-        <td>{{ date.device_user_department }}</td>
-        <td>{{ date.node }}</td>
-        <td><a href="{% url 'edit' date.device_factory_number %}">编辑</a></td>
-
+        <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_name }}</td>
+        <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_model }}</td>
+        <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_range }}</td>
+        <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_precision }}</td>
+        <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.manufacturer }}</td>
+        <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.Commissioning_date|date:"Y-m-d"}}</td>
+        <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_number }}</td>
+        <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_factory_number }}</td>
+        <td style='text-align: center;'>{{ date.calibration_department }}</td>
+        <td style='text-align: center;'>{{ date.calibration_cycle }}</td>
+        <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.calibration_time|date:"Y-m-d"}}</td>
+        <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.expire_time|date:"Y-m-d" }}</td>
+        <td style='text-align: center;'>{{ date.jieguo_type }}</td>
+        <td style='text-align: center;'>{{ date.device_type }}</td>
+        <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_user_department }}</td>
+        <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.node }}</td>
+        <td><a href="{% url 'edit' date.device_factory_number %}">查看</a></td>
     </tr>
         {% endfor %}
     </table>

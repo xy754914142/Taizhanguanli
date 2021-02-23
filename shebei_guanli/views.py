@@ -117,7 +117,7 @@ class Update(View):
 @method_decorator(login, name='dispatch')
 class Equipment_parameter(View):
     def get(self,request,page):
-        page_info = PageInfo(page, Taizhang.objects.all().count(), 15, '/equipment_parameter/', 11)
+        page_info = PageInfo(page, Taizhang.objects.all().count(), 12, '/equipment_parameter/', 11)
         class_list = Taizhang.objects.all()[page_info.start():page_info.end()]
         return render(request,'shebei_guanli/index.html',{'dates':class_list,'page_info':page_info,'ig':0})
 
@@ -140,7 +140,7 @@ class Equipment_parameter(View):
             Q(device_user_department__contains=seacher_text)|
             Q(node__contains=seacher_text)
         )
-        page_info = PageInfo(page, v.count(), 15, '/equipment_parameter/', 11)
+        page_info = PageInfo(page, v.count(), 12, '/equipment_parameter/', 11)
         class_list = v[page_info.start():page_info.end()]
         return render(request,'shebei_guanli/index.html',{'dates':class_list,'page_info':page_info,'ig':1,'seacher_text':seacher_text})
 

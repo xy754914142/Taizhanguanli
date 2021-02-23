@@ -1,129 +1,156 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
-</head>
-<body>
-<form method="post" action="" id="editform" class="form-horizontal">
-    <div class="form-group">
-        <label for="device_name" class="col-sm-2 control-label">测量设备名称:</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control" id="device_name" value="{{ data.device_name }}">
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="device_model" class="col-sm-2 control-label">型号:</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control" id="device_model" value="{{ data.device_model }}">
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="device_range" class="col-sm-2 control-label">量程:</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control" id="device_range" value="{{ data.device_range }}">
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="device_precision" class="col-sm-2 control-label">精度:</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control" id="device_precision" value="{{ data.device_precision }}">
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="manufacturer" class="col-sm-2 control-label">生产厂家:</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control" id="manufacturer" value="{{ data.manufacturer }}">
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="Commissioning_date" class="col-sm-2 control-label">启用日期:</label>
-        <div class="col-sm-10">
-            <input type="date" class="form-control" id="Commissioning_date" value="{{ data.Commissioning_date|date:"Y-m-d" }}">
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="device_number" class="col-sm-2 control-label">器具编号:</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control" id="device_number" value="{{ data.device_number }}">
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="device_factory_number" class="col-sm-2 control-label">本厂编号:</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control" id="device_factory_number" value="{{ data.device_factory_number }}">
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="calibration_department" class="col-sm-2 control-label">检定部门:</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control" id="calibration_department" value="{{ data.calibration_department }}">
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="calibration_cycle" class="col-sm-2 control-label">检定周期:</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control" id="calibration_cycle" value="{{ data.calibration_cycle }}">
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="calibration_time" class="col-sm-2 control-label">检定日期:</label>
-        <div class="col-sm-10">
-            <input type="date" class="form-control" id="calibration_time" value="{{ data.calibration_time|date:"Y-m-d" }}">
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="expire_time" class="col-sm-2 control-label">有效期至:</label>
-        <div class="col-sm-10">
-            <input type="date" class="form-control" id="expire_time" value="{{ data.expire_time|date:"Y-m-d" }}">
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="jieguo_type" class="col-sm-2 control-label">检定结果:</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control" id="jieguo_type" value="{{ data.jieguo_type }}" disabled>
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="select1" class="col-sm-2 control-label">分类:</label>
-        <div class="col-sm-10">
-            <select class="form-control" id="select1">
-                <option value="A">A类</option>
-                <option value="B">B类</option>
-                <option value="C">C类</option>
-            </select>
-        </div>
+{% extends "management.html" %}
 
-    </div>
+{% block include-css %}
 
-    <div class="form-group">
-        <label for="device_user_department" class="col-sm-2 control-label">使用部门:</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control" id="device_user_department" value="{{ data.device_user_department }}">
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="node" class="col-sm-2 control-label">备注:</label>
-        <div class="col-sm-10">
-            <textarea class="form-control" id="node">{{ data.node }}</textarea>
-        </div>
-    </div>
+{% endblock include-css %}
 
 
-</form>
-</body>
-<script>
-    $(function () {
-        var select_1 = document.getElementById("select1");
-        for(i=0;i< select_1.options.length;i++){
-            if(select_1.options[i].value == "{{ data.device_type }}")
-            {
-                select_1.options[i].selected = true;
+{% block content %}
+    <ol class="breadcrumb">
+        <li><a href="{% url 'equipment_parameter' 1 %}">设备列表</a></li>
+        <li class="active">详情</li>
+    </ol>
+    <div class="panel panel-default" style="width: 1200px;margin-left: 100px">
+        <div class="panel-heading">
+            <h3 class="panel-title">测量设备详情</h3>
+        </div>
+        <div class="panel-body" style="margin-left: 100px;">
+
+
+            <form method="post" action="" id="editform" class="form-horizontal">
+                <div class="form-group">
+                    <label for="device_name" class="col-sm-2 control-label">测量设备名称:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="device_name" value="{{ data.device_name }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="device_model" class="col-sm-2 control-label">型号:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="device_model" value="{{ data.device_model }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="device_range" class="col-sm-2 control-label">量程:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="device_range" value="{{ data.device_range }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="device_precision" class="col-sm-2 control-label">精度:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="device_precision"
+                               value="{{ data.device_precision }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="manufacturer" class="col-sm-2 control-label">生产厂家:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="manufacturer" value="{{ data.manufacturer }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="Commissioning_date" class="col-sm-2 control-label">启用日期:</label>
+                    <div class="col-sm-6">
+                        <input type="date" class="form-control" id="Commissioning_date"
+                               value="{{ data.Commissioning_date|date:"Y-m-d" }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="device_number" class="col-sm-2 control-label">器具编号:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="device_number" value="{{ data.device_number }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="device_factory_number" class="col-sm-2 control-label">本厂编号:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="device_factory_number"
+                               value="{{ data.device_factory_number }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="calibration_department" class="col-sm-2 control-label">检定部门:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="calibration_department"
+                               value="{{ data.calibration_department }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="calibration_cycle" class="col-sm-2 control-label">检定周期:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="calibration_cycle"
+                               value="{{ data.calibration_cycle }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="calibration_time" class="col-sm-2 control-label">检定日期:</label>
+                    <div class="col-sm-6">
+                        <input type="date" class="form-control" id="calibration_time"
+                               value="{{ data.calibration_time|date:"Y-m-d" }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="expire_time" class="col-sm-2 control-label">有效期至:</label>
+                    <div class="col-sm-6">
+                        <input type="date" class="form-control" id="expire_time"
+                               value="{{ data.expire_time|date:"Y-m-d" }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="jieguo_type" class="col-sm-2 control-label">检定结果:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="jieguo_type" value="{{ data.jieguo_type }}"
+                               disabled>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="select1" class="col-sm-2 control-label">分类:</label>
+                    <div class="col-sm-6">
+                        <select class="form-control" id="select1">
+                            <option value="A">A类</option>
+                            <option value="B">B类</option>
+                            <option value="C">C类</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+                    <label for="device_user_department" class="col-sm-2 control-label">使用部门:</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="device_user_department"
+                               value="{{ data.device_user_department }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="node" class="col-sm-2 control-label">备注:</label>
+                    <div class="col-sm-6">
+                        <textarea class="form-control" id="node">{{ data.node }}</textarea>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-left: 130px;margin-top: 70px">
+                    <input type="submit" value="修改" class="btn btn-info btn-lg">
+                    <button type="button" class="btn btn-success btn-lg" style="margin-left: 80px">闲置</button>
+                    <button type="button" class="btn btn-warning btn-lg" style="margin-left: 80px">报废</button>
+                    <button type="button" class="btn btn-danger btn-lg" style="margin-left: 80px">删除</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        $(function () {
+            var select_1 = document.getElementById("select1");
+            for (i = 0; i < select_1.options.length; i++) {
+                if (select_1.options[i].value == "{{ data.device_type }}") {
+                    select_1.options[i].selected = true;
+                }
             }
-        }
 
-    })
-</script>
-</html>
+        })
+    </script>
+{% endblock content %}
+
+{% block include-js %}
+
+{% endblock include-js %}
