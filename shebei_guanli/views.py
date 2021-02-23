@@ -145,8 +145,8 @@ class Equipment_parameter(View):
         return render(request,'shebei_guanli/index.html',{'dates':class_list,'page_info':page_info,'ig':1,'seacher_text':seacher_text})
 
 def edit(request,editnumber):
-
-    return HttpResponse('...')
+    data = Taizhang.objects.filter(device_factory_number=editnumber).first()
+    return render(request,'shebei_guanli/edit.html',{'data':data})
 
 def test(request):
     return render(request,'test.html')
