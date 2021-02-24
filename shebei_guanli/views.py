@@ -8,7 +8,7 @@ from django.forms import Form
 from django.forms import fields
 from django.utils.decorators import method_decorator
 from django.db.models import Q
-
+import datetime
 
 class MyForm(Form):
     username = fields.CharField(
@@ -38,7 +38,11 @@ class Login(View):
         v = MyForm(request.POST)
         if v.is_valid():
             data = UserInfo.objects.filter(username=v.cleaned_data['username']).first()
-            print(data.password)
+            is_remember = request.POST.get('remember')
+            if is_remember:
+                request.session.set_expiry(604800)
+            else:
+                request.session.set_expiry(0)
             if v and data.password == v.cleaned_data['password']:
                     request.session['userinfo'] = {'username': v.cleaned_data['username'],
                                                    'password': v.cleaned_data['password']}
@@ -119,7 +123,7 @@ class Equipment_parameter(View):
     def get(self,request,page):
         page_info = PageInfo(page, Taizhang.objects.all().count(), 12, '/equipment_parameter/', 11)
         class_list = Taizhang.objects.all()[page_info.start():page_info.end()]
-        return render(request,'shebei_guanli/index.html',{'dates':class_list,'page_info':page_info,'ig':0})
+        return render(request, 'shebei_guanli/shebei_index.html', {'dates':class_list, 'page_info':page_info, 'ig':0})
 
     def post(self,request,page):
         seacher_text = request.POST.get('search_text')
@@ -142,11 +146,15 @@ class Equipment_parameter(View):
         )
         page_info = PageInfo(page, v.count(), 12, '/equipment_parameter/', 11)
         class_list = v[page_info.start():page_info.end()]
-        return render(request,'shebei_guanli/index.html',{'dates':class_list,'page_info':page_info,'ig':1,'seacher_text':seacher_text})
+        return render(request, 'shebei_guanli/shebei_index.html', {'dates':class_list, 'page_info':page_info, 'ig':1, 'seacher_text':seacher_text})
 
 def edit(request,editnumber):
     data = Taizhang.objects.filter(device_factory_number=editnumber).first()
     return render(request,'shebei_guanli/edit.html',{'data':data})
 
-def test(request):
-    return render(request,'test.html')
+def index(request):
+    now_data = datetime.datetime.now().strftime('%Y-%m-%d')
+    add_day = datetime.datetime.now() + datetime.timedelta(days=7)
+    today_dates = Taizhang.objects.filter(expire_time=now_data)
+    day_7_dates = Taizhang.objects.filter(expire_time=add_day.strftime('%Y-%m-%d'))
+    return render(request,'index.html',{'today_dates':today_dates,'day_7_dates':day_7_dates})
