@@ -34,7 +34,7 @@ class MyForm(Form):
 # Create your views here.
 class Login(View):
     def get(self,request):
-        return render(request,'login.html')
+        return render(request, 'login.html')
     def post(self,request):
         v = MyForm(request.POST)
         if v.is_valid():
@@ -47,11 +47,11 @@ class Login(View):
             if v and data.password == v.cleaned_data['password']:
                     request.session['userinfo'] = {'username': v.cleaned_data['username'],
                                                    'password': v.cleaned_data['password']}
-                    return redirect(reverse('mian_html'))
+                    return redirect(reverse('index'))
             else:
                 return render(request, 'login.html', {'erro': v.errors})
         else:
-            return render(request,'login.html',{'erro':v.errors})
+            return render(request, 'login.html', {'erro':v.errors})
 
 def login(func):
     def wrap(request, *args, **kwargs):
