@@ -14,7 +14,7 @@
 
         <div class="container-fluid">
             <div class="card-toolbar clearfix">
-                <form class="pull-right search-bar"  method="post" action="{% url "equipment_parameter" 1 %}" class="navbar-form navbar-right"
+                <form class="pull-right search-bar"  method="post" action="{% url "equipment_parameter" 'B' '1' %}" class="navbar-form navbar-right"
                           role="form">
                     <div class="input-group" style="margin-right: 60px">
                         <div class="input-group-btn">
@@ -86,7 +86,7 @@
                         <td>{{ date.node }}</td>
                         <td>
                             <div class="btn-group">
-                                <a class="btn btn-xs btn-default" href="{% url 'edit' date.device_factory_number %}"
+                                <a class="btn btn-xs btn-default" href="{% url 'edit' date.device_type date.device_factory_number %}"
                                    title="编辑" data-toggle="tooltip"><i class="mdi mdi-pencil"></i></a>
                                 <a class="btn btn-xs btn-default" href="#!" title="完成" data-toggle="tooltip"><i
                                         class="mdi mdi-clipboard-outline"></i></a>

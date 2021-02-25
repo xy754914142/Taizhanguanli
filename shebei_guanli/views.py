@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect,reverse
 from django.http import HttpResponse
 from django.views import View
-from .models import Taizhang,UserInfo
+from .models import *
 from utils.page import PageInfo
 import openpyxl
 from django.forms import Form
@@ -9,6 +9,7 @@ from django.forms import fields
 from django.utils.decorators import method_decorator
 from django.db.models import Q
 import datetime
+import json
 
 class MyForm(Form):
     username = fields.CharField(
@@ -93,7 +94,7 @@ class Update(View):
                         if(date_list):
                             try:
 
-                                Taizhang.objects.create(
+                                B_Taizhang.objects.create(
                                         device_name = date_list[0],
                                         device_model = date_list[1],
                                         device_range = date_list[2],
@@ -120,14 +121,19 @@ class Update(View):
 
 @method_decorator(login, name='dispatch')
 class Equipment_parameter(View):
-    def get(self,request,page):
-        page_info = PageInfo(page, Taizhang.objects.all().count(), 12, '/equipment_parameter/', 11)
-        class_list = Taizhang.objects.all()[page_info.start():page_info.end()]
+    def get(self,request,shebei_type,page):
+        page_info = PageInfo(page, B_Taizhang.objects.all().count(), 12, '/equipment_parameter/', 11)
+        if shebei_type == 'A':
+            class_list = A_Taizhang.objects.all()[page_info.start():page_info.end()]
+        elif shebei_type == 'B':
+            class_list = B_Taizhang.objects.all()[page_info.start():page_info.end()]
+        elif shebei_type == 'C':
+            class_list = C_Taizhang.objects.all()[page_info.start():page_info.end()]
         return render(request, 'shebei_guanli/shebei_index.html', {'dates':class_list, 'page_info':page_info, 'ig':0})
 
-    def post(self,request,page):
+    def post(self,request,shebei_type,page):
         seacher_text = request.POST.get('search_text')
-        v = Taizhang.objects.filter(
+        v = B_Taizhang.objects.filter(
             Q(device_name__contains=seacher_text)|
             Q(device_model__contains=seacher_text)|
             Q(device_range__contains=seacher_text)|
@@ -148,13 +154,60 @@ class Equipment_parameter(View):
         class_list = v[page_info.start():page_info.end()]
         return render(request, 'shebei_guanli/shebei_index.html', {'dates':class_list, 'page_info':page_info, 'ig':1, 'seacher_text':seacher_text})
 
-def edit(request,editnumber):
-    data = Taizhang.objects.filter(device_factory_number=editnumber).first()
-    return render(request,'shebei_guanli/edit.html',{'data':data})
+@method_decorator(login, name='dispatch')
+class Edit(View):
+    def get(self,request,shebei_type,editnumber):
+        if shebei_type == 'A':
+            data = A_Taizhang.objects.filter(device_factory_number=editnumber).first()
+        elif shebei_type == 'B':
+            data = B_Taizhang.objects.filter(device_factory_number=editnumber).first()
+        elif shebei_type == 'C':
+            data = C_Taizhang.objects.filter(device_factory_number=editnumber).first()
+        return render(request,'shebei_guanli/edit.html',{'data':data})
+
+    def post(self,request,shebei_type,editnumber):
+        ret = {'status': True, 'message': None}
+        message_erro = "处理erro"
+        try:
+            datas = json.loads(request.POST.get('datas'))
+            device_t = request.POST.get('device_t')
+            if device_t == 'B':
+                if datas['device_type'] =='B':
+                    B_Taizhang.objects.filter(device_factory_number=editnumber).update(**datas)
+                else:
+                    B_Taizhang.objects.filter(device_factory_number=editnumber).delete()
+                    A_Taizhang.objects.create(**datas)
+            else:
+                if datas['device_type'] =='B':
+                    A_Taizhang.objects.filter(device_factory_number=editnumber).delete()
+                    B_Taizhang.objects.create(**datas)
+                else:
+                    A_Taizhang.objects.filter(device_factory_number=editnumber).update(**datas)
+
+        except Exception as e:
+            ret['status'] = False
+            ret['message'] = message_erro
+
+        return HttpResponse(json.dumps(ret))
+
+
 
 def index(request):
     now_data = datetime.datetime.now().strftime('%Y-%m-%d')
     add_day = datetime.datetime.now() + datetime.timedelta(days=7)
-    today_dates = Taizhang.objects.filter(expire_time=now_data)
-    day_7_dates = Taizhang.objects.filter(expire_time=add_day.strftime('%Y-%m-%d'))
-    return render(request,'index.html',{'today_dates':today_dates,'day_7_dates':day_7_dates})
+    A_today_dates = B_Taizhang.objects.filter(expire_time=now_data)
+    B_today_dates = A_Taizhang.objects.filter(expire_time=now_data)
+
+
+    A_day_7_dates = A_Taizhang.objects.filter(expire_time=add_day.strftime('%Y-%m-%d'))
+    B_day_7_dates = B_Taizhang.objects.filter(expire_time=add_day.strftime('%Y-%m-%d'))
+    return render(request,'index.html',{'A_today_dates':A_today_dates,'B_today_dates':B_today_dates,'A_day_7_dates':A_day_7_dates,'B_day_7_dates':B_day_7_dates})
+
+
+def test(request):
+    if request.method == 'GET':
+        return render(request,'test.html')
+    else:
+        r = request.POST.get('dates')
+        print(r)
+        return HttpResponse(r)
