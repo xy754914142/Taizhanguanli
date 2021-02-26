@@ -248,6 +248,8 @@ class Edit(View):
 
 @login
 def index(request):
+    v = request.session.get('userinfo')
+    user_info = UserInfo.objects.filter(username=v['username'],password=v['password']).first()
     now_data = datetime.datetime.now().strftime('%Y-%m-%d')
     add_day = datetime.datetime.now() + datetime.timedelta(days=7)
     A_today_dates = B_Taizhang.objects.filter(expire_time=now_data)
@@ -257,7 +259,7 @@ def index(request):
     B_day_7_dates = B_Taizhang.objects.filter(expire_time=add_day.strftime('%Y-%m-%d'))
     return render(request, 'index.html',
                   {'A_today_dates': A_today_dates, 'B_today_dates': B_today_dates, 'A_day_7_dates': A_day_7_dates,
-                   'B_day_7_dates': B_day_7_dates})
+                   'B_day_7_dates': B_day_7_dates,'user_info':user_info})
 
 
 @login
@@ -268,3 +270,12 @@ def test(request):
         r = request.POST.get('dates')
         print(r)
         return HttpResponse(r)
+
+@method_decorator(login, name='dispatch')
+class Profile(View):
+    def get(self,request):
+        v = request.session.get('userinfo')
+        user_info = UserInfo.objects.filter(username=v['username'], password=v['password']).first()
+        return render(request,'profile.html',{'user_info':user_info})
+    def post(self,request):
+        pass

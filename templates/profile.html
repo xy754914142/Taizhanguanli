@@ -1,0 +1,122 @@
+{% extends "index.html" %}
+
+{% block include-css %}
+
+{% endblock include-css %}
+
+{% block title %}
+
+    个人信息
+{% endblock title %}
+{% block biaoti %}
+    <li class="nav-item active"><a href="{% url 'index' %}"><i class="mdi mdi-home"></i> 首 页</a>
+    </li>
+    <li class="nav-item nav-item-has-subnav">
+        <a href="javascript:void(0)"><i class="mdi mdi-laptop"></i> 设备台账</a>
+        <ul class="nav nav-subnav">
+            <li><a href="{% url "equipment_parameter" 'A' '1' %}">A类设备台账</a></li>
+            <li><a href="{% url "equipment_parameter" 'B' '1' %}">B类设备台账</a></li>
+            <li><a href="{% url "equipment_parameter" 'C' '1' %}">C类设备台账</a></li>
+        </ul>
+    </li>
+    <li class="nav-item nav-item-has-subnav">
+    <a href="{% url 'update' %}"><i class="mdi mdi-shape-square-plus"></i> 上传数据</a>
+{% endblock biaoti %}
+{% block content %}
+    <!--页面主要内容-->
+    <main class="lyear-layout-content">
+
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <hr>
+                            <form method="post" action="#!" class="site-form">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="username">用户名</label>
+                                    <input type="text" class="form-control" name="username" id="username"
+                                           value="{{ user_info.username }}" disabled="disabled"/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nickname">昵称</label>
+                                    <input type="text" class="form-control" name="nickname" id="nickname"
+                                           placeholder="输入您的昵称" value="{{ user_info.nickname }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">邮箱</label>
+                                    <input type="email" class="form-control" name="email" id="email"
+                                           aria-describedby="emailHelp" placeholder="请输入正确的邮箱地址"
+                                           value="{{ user_info.email }}">
+                                    <small id="emailHelp" class="form-text text-muted">请保证您填写的邮箱地址是正确的。</small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="remark">简介</label>
+                                    <textarea class="form-control" name="remark" id="remark"
+                                              rows="3">{{ user_info.abstract }}</textarea>
+                                </div>
+                                <button type="button" class="btn btn-primary" id="submit">保存</button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+    <!--End 页面主要内容-->
+    <script>
+        $('#submit').click(function () {
+            var token = $.cookie('csrftoken');
+
+
+            var nickname = $("#nickname").val();
+            var email = $("#email").val();
+            var nickname = $("#remark").val();
+            var formdata = new FormData();
+            formdata.append('nickname', nickname);
+            formdata.append('email', email);
+            formdata.append('nickname', nickname);
+            $.ajax({
+                url: '/profile.html',
+                type: 'POST',
+                data: formdata,
+                dataType: 'JSON',
+                processData: false, // 不处理数据( 必须有)
+                contentType: false,  //不设置内容类型 ( 必须要)
+                headers: {'X-CSRFToken': token},
+                success: function (args) {
+                    if (args.status) {
+                        lightyear.loading('show');
+                        // 假设ajax提交操作
+                        setTimeout(function () {
+                            lightyear.loading('hide');
+                            lightyear.notify('上传成功~', 'success', 3000);
+                        }, 1e3);
+
+                    } else {
+                        console.log(args.status);
+                        lightyear.loading('show');
+                        // 假设ajax提交操作
+                        setTimeout(function () {
+                            lightyear.loading('hide');
+                            lightyear.notify('上传失败，请稍后再试~' + args.message, 'danger', 100);
+                        }, 1e3)
+                    }
+                }
+            })
+
+        })
+    </script>
+
+{% endblock content %}
+
+{% block include-js %}
+
+{% endblock include-js %}

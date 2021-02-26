@@ -4,6 +4,9 @@ from django.db import models
 class UserInfo(models.Model):
     username = models.CharField(max_length=32, unique=True)
     password = models.CharField(max_length=32)
+    nickname = models.CharField(max_length=32, default='默认用户')
+    email = models.EmailField(null=True)
+    abstract = models.CharField(max_length=168,null=True)
 class B_Taizhang(models.Model):
     # calibration_department_choice = (
     #     (0,'公司'),
