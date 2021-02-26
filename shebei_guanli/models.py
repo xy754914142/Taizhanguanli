@@ -88,9 +88,9 @@ class C_Taizhang(models.Model):
     calibration_department = models.CharField(max_length=64,verbose_name='检定部门',blank=True,null=False,default='/')
     calibration_cycle = models.CharField(max_length=64,verbose_name='检定周期',blank=True,null=False,default='/')
     calibration_time = models.DateField(null=True, blank=True, verbose_name='检定日期')
-    expire_time = models.DateField(null=True, blank=True, verbose_name='到期日期')
+    expire_time = models.CharField(max_length=64,null=True, blank=True, verbose_name='到期日期')
     jieguo_type = models.CharField(max_length=20, verbose_name='检定结果',blank=True,null=False,default='合格')
-    device_type = models.CharField(max_length=64, verbose_name='设备类型',blank=True,null=False,default='A')
+    device_type = models.CharField(max_length=64, verbose_name='设备类型',blank=True,null=False,default='C')
     device_user_department = models.CharField(max_length=64,verbose_name='所属部门',blank=True,null=False,default='/')
     node = models.CharField(max_length=128,null=True, verbose_name='备注',blank=True,default='/')
 

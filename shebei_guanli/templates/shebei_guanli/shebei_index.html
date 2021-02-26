@@ -8,7 +8,19 @@
 
     B类设备台账
 {% endblock title %}
-
+{% block biaoti %}
+    <li class="nav-item nav-item-has-subnav"><a href="{% url 'index' %}"><i class="mdi mdi-home"></i> 首 页</a>
+    </li>
+    <li class="nav-item nav-item-has-subnav active">
+        <a href="javascript:void(0)"><i class="mdi mdi-laptop"></i> 设备台账</a>
+        <ul class="nav nav-subnav">
+            <li><a href="{% url "equipment_parameter" 'A' '1' %}">A类设备台账</a></li>
+            <li><a href="{% url "equipment_parameter" 'B' '1' %}">B类设备台账</a></li>
+            <li><a href="{% url "equipment_parameter" 'C' '1' %}">C类设备台账</a></li>
+        </ul>
+    </li>
+    <li class="nav-item nav-item-has-subnav"><a href="{% url 'update' %}"><i class="mdi mdi-shape-square-plus"></i> 上传数据</a>
+{% endblock biaoti %}
 {% block content %}
     <main class="lyear-layout-content">
 
@@ -49,11 +61,9 @@
                     <th>量程</th>
                     <th>精度</th>
                     <th>生产厂家</th>
-                    <th>启用日期</th>
                     <th style="width: 101px">器具编号</th>
                     <th>本厂编号</th>
                     <th style="width: 73px">检定部门</th>
-                    <th style="width: 45px">周期</th>
                     <th>检定日期</th>
                     <th>有效期至</th>
                     <th>使用部门</th>
@@ -75,11 +85,9 @@
                         <td>{{ date.device_range }}</td>
                         <td>{{ date.device_precision }}</td>
                         <td>{{ date.manufacturer }}</td>
-                        <td>{{ date.Commissioning_date|date:"Y-m-d" }}</td>
                         <td>{{ date.device_number }}</td>
                         <td>{{ date.device_factory_number }}</td>
                         <td>{{ date.calibration_department }}</td>
-                        <td>{{ date.calibration_cycle }}</td>
                         <td>{{ date.calibration_time|date:"Y-m-d" }}</td>
                         <td>{{ date.expire_time|date:"Y-m-d" }}</td>
                         <td>{{ date.device_user_department }}</td>

@@ -1,21 +1,119 @@
-{% extends "management.html" %}
+{% extends "index.html" %}
 
 {% block include-css %}
 
 {% endblock include-css %}
+{% block include-js %}
+{% endblock include-js %}
+{% block title %}
 
-
+    上传数据
+{% endblock title %}
+{% block biaoti %}
+    <li class="nav-item nav-item-has-subnav"><a href="{% url 'index' %}"><i class="mdi mdi-home"></i> 首 页</a>
+    </li>
+    <li class="nav-item nav-item-has-subnav">
+        <a href="javascript:void(0)"><i class="mdi mdi-laptop"></i> 设备台账</a>
+        <ul class="nav nav-subnav">
+            <li><a href="{% url "equipment_parameter" 'A' '1' %}">A类设备台账</a></li>
+            <li><a href="{% url "equipment_parameter" 'B' '1' %}">B类设备台账</a></li>
+            <li><a href="{% url "equipment_parameter" 'C' '1' %}">C类设备台账</a></li>
+        </ul>
+    </li>
+    <li class="nav-item active"><a href="{% url 'update' %}"><i class="mdi mdi-shape-square-plus"></i> 上传数据</a>
+{% endblock biaoti %}
 {% block content %}
-    <form action="{% url 'update' %}" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <input type="file" name="date">
 
-        <input type="submit">
-    </form>
+
+    <div class="col-sm-6 col-lg-3" style="margin: 14% 38%;">
+        <div class="card">
+            <div class="card-header bg-primary">
+                <h4>上传数据</h4>
+            </div>
+            <div class="card-body">
+                <form action="{% url 'update' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group" style="padding-bottom: 18%">
+                        <label class="col-xs-12">选择上传至</label>
+                        <div class="col-xs-12">
+                            <label class="radio-inline" for="example-inline-radio1">
+                                <input type="radio" id="example-inline-radio1" name="example-inline-radios" value="A">
+                                A类台账
+                            </label>
+                            <label class="radio-inline" for="example-inline-radio2">
+                                <input type="radio" id="example-inline-radio2" name="example-inline-radios" value="B"
+                                       checked>
+                                B类台账
+                            </label>
+                            <label class="radio-inline" for="example-inline-radio3">
+                                <input type="radio" id="example-inline-radio3" name="example-inline-radios" value="C">
+                                C类台账
+                            </label>
+                        </div>
+                    </div>
+                    <div style="margin: 5% 6%;">
+                        <input type="file" name="data" id='data' accept=".xls,.xlsx">
+                    </div>
+                    <div style="margin: 7% 37%;">
+                        <button type="button" class="btn btn-info btn-lg" id="submit">上传</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        $('#submit').click(function () {
+            var token = $.cookie('csrftoken');
+
+            if ($('#data').val()) {
+                var file = $('input[type=file]')[0].files[0];
+                var ty = $("input[name='example-inline-radios']:checked").val();
+                var formdata = new FormData();
+                formdata.append('data', file);
+                formdata.append('ty', ty);
+                $.ajax({
+                    url: '/update.html',
+                    type: 'POST',
+                    data: formdata,
+                    dataType: 'JSON',
+                    processData: false, // 不处理数据( 必须有)
+                    contentType: false,  //不设置内容类型 ( 必须要)
+                    headers: {'X-CSRFToken': token},
+                    success: function (args) {
+                        console.log(args);
+                        console.log(args.status);
+                        if (args.status) {
+                            console.log(args.status);
+                            lightyear.loading('show');
+                            // 假设ajax提交操作
+                            setTimeout(function () {
+                                lightyear.loading('hide');
+                                lightyear.notify('上传成功~', 'success', 3000);
+                            }, 1e3);
+
+                        } else {
+                            console.log(args.status);
+                            lightyear.loading('show');
+                            // 假设ajax提交操作
+                            setTimeout(function () {
+                                lightyear.loading('hide');
+                                lightyear.notify('上传失败，请稍后再试~'+args.message, 'danger', 100);
+                            }, 1e3)
+                        }
+                    }
+                })
+            } else {
+                lightyear.loading('show');
+                // 假设ajax提交操作
+                setTimeout(function () {
+                    lightyear.loading('hide');
+                    lightyear.notify('文件不能为空，请修改后再试~', 'danger', 100);
+                }, 1e3)
+            }
+        })
+    </script>
 
 {% endblock content %}
 
-{% block include-js %}
 
-{% endblock include-js %}
 

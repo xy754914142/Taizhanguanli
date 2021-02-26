@@ -8,7 +8,19 @@
 
     设备详情
 {% endblock title %}
-
+{% block biaoti %}
+    <li class="nav-item nav-item-has-subnav"><a href="{% url 'index' %}"><i class="mdi mdi-home"></i> 首 页</a>
+    </li>
+    <li class="nav-item nav-item-has-subnav active">
+        <a href="javascript:void(0)"><i class="mdi mdi-laptop"></i> 设备台账</a>
+        <ul class="nav nav-subnav">
+            <li><a href="{% url "equipment_parameter" 'A' '1' %}">A类设备台账</a></li>
+            <li><a href="{% url "equipment_parameter" 'B' '1' %}">B类设备台账</a></li>
+            <li><a href="{% url "equipment_parameter" 'C' '1' %}">C类设备台账</a></li>
+        </ul>
+    </li>
+    <li class="nav-item nav-item-has-subnav"><a href="{% url 'update' %}"><i class="mdi mdi-shape-square-plus"></i> 上传数据</a>
+{% endblock biaoti %}
 {% block content %}
     <div class="row" style="margin-left: 12%">
 

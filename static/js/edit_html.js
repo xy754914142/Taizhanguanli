@@ -51,6 +51,7 @@ function Submit_bt() {
                 headers: {'X-CSRFToken': token},
                 success: function (args) {
                     if (args.status) {
+                        console.log(args.status);
                         lightyear.loading('show');
                         // 假设ajax提交操作
                         setTimeout(function () {
