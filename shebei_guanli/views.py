@@ -366,29 +366,36 @@ def complete(request, shebei_type, editnumber):
 
 @login
 def completes(request):
-    v = request.POST.getlist('hobby')
-    shebei_type = 'B'
-    for dev in v:
-        shebei_type, editnumber = dev.split(':')
-        if shebei_type == 'A':
-            v = A_Taizhang.objects.filter(device_factory_number=editnumber).first()
-        elif shebei_type == 'B':
-            v = B_Taizhang.objects.filter(device_factory_number=editnumber).first()
-        now_time = datetime.datetime.now()
-        calibration_time = now_time.strftime('%Y-%m-%d')
-        if v.calibration_cycle == '半年':
-            expire_time = now_time + relativedelta(months=+6) - relativedelta(days=+1)
-            print(expire_time)
-        elif v.calibration_cycle == '1年':
-            expire_time = now_time + relativedelta(years=+1) - relativedelta(days=+1)
-            print(expire_time)
-        elif v.calibration_cycle == '2年':
-            expire_time = now_time + relativedelta(years=+2) - relativedelta(days=+1)
-            print(expire_time)
-        if shebei_type == 'A':
-            A_Taizhang.objects.filter(device_factory_number=editnumber).update(calibration_time=calibration_time,
-                                                                               expire_time=expire_time)
-        elif shebei_type == 'B':
-            B_Taizhang.objects.filter(device_factory_number=editnumber).update(calibration_time=calibration_time,
-                                                                               expire_time=expire_time)
-    return redirect(reverse('equipment_parameter', kwargs={'shebei_type': shebei_type, 'page': 1}))
+    ret = {'status': True, 'message': None}
+    message_erro = "处理erro"
+    try:
+        v = request.POST.get('values').split(',')
+        for dev in v:
+            shebei_type, editnumber = dev.split(':')
+            if shebei_type == 'A':
+                v = A_Taizhang.objects.filter(device_factory_number=editnumber).first()
+            elif shebei_type == 'B':
+                v = B_Taizhang.objects.filter(device_factory_number=editnumber).first()
+            now_time = datetime.datetime.now()
+            calibration_time = now_time.strftime('%Y-%m-%d')
+            if v.calibration_cycle == '半年':
+                expire_time = now_time + relativedelta(months=+6) - relativedelta(days=+1)
+                print(expire_time)
+            elif v.calibration_cycle == '1年':
+                expire_time = now_time + relativedelta(years=+1) - relativedelta(days=+1)
+                print(expire_time)
+            elif v.calibration_cycle == '2年':
+                expire_time = now_time + relativedelta(years=+2) - relativedelta(days=+1)
+                print(expire_time)
+            if shebei_type == 'A':
+                A_Taizhang.objects.filter(device_factory_number=editnumber).update(calibration_time=calibration_time,
+                                                                                   expire_time=expire_time)
+            elif shebei_type == 'B':
+                B_Taizhang.objects.filter(device_factory_number=editnumber).update(calibration_time=calibration_time,
+                                                                                   expire_time=expire_time)
+
+    except Exception as e:
+        ret['status'] = False
+        ret['message'] = str(e)
+
+    return HttpResponse(json.dumps(ret))

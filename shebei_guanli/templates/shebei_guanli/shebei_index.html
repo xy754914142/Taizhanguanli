@@ -37,9 +37,7 @@
                 <div class="toolbar-btn-action">
                     <a class="btn btn-primary m-r-5" href="#!"><i class="mdi mdi-plus"></i> 新增</a>
                     {% if shebei_type != 'C' %}
-                    <a class="btn btn-success m-r-5"
-                       onclick="document.getElementById('my_form').submit();return false;"><i class="mdi mdi-check"></i>
-                        完成</a>
+                    <a class="btn btn-success m-r-5" id="complete_bt"><i class="mdi mdi-check"></i>完成</a>
                     {% endif %}
                     <a class="btn btn-warning m-r-5" href="#!"><i class="mdi mdi-server-remove"></i> 闲置</a>
                     <a class="btn btn-dark m-r-5" href="#!"><i class="mdi mdi-block-helper"></i> 报废</a>
@@ -70,8 +68,7 @@
                     <th>操作</th>
                 </tr>
                 </thead>
-                <form id="my_form" method="post" action="{% url 'completes' %}">
-                    {% csrf_token %}
+
                     <tbody>
 
 
@@ -113,7 +110,6 @@
                     {% endfor %}
 
                     </tbody>
-                </form>
             </table>
             <nav aria-label="Page navigation">
                 <ul class="pagination">
@@ -133,14 +129,6 @@
 {% endblock content %}
 
 {% block include-js %}
-    <script>
-        $(function () {
-            $('#shouye').removeClass('active');
-            $('#update').removeClass('active');
-            $('#taizhang').addClass('active');
-
-        })
-
-    </script>
+    <script src="/static/js/shebei_index.js"></script>
 {% endblock include-js %}
 
