@@ -1,8 +1,13 @@
 $(function () {
+    Leftmeun();
     Set_select_type();
     Submit_bt();
 })
+function Leftmeun() {
+    $('#shouye').removeClass('active');
+    $('#taizhang').addClass('active');
 
+}
 function Set_select_type() {
     var d_t = $('#device_t').val();
     var select_1 = document.getElementById("select_id");
@@ -56,9 +61,9 @@ function Submit_bt() {
                         // 假设ajax提交操作
                         setTimeout(function () {
                             lightyear.loading('hide');
-                            lightyear.notify('修改成功~', 'success', 3000);
+                            lightyear.notify('修改成功,正在跳转~', 'success', 3000);
                         }, 1e3);
-
+                        setTimeout('location.reload()',2000);
                     } else {
                         lightyear.loading('show');
                         // 假设ajax提交操作

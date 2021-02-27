@@ -42,10 +42,10 @@
 
                 <nav class="sidebar-main">
                     <ul class="nav nav-drawer">
-                        {% block biaoti %}
-                        <li class="nav-item active"><a href="{% url 'index' %}"><i class="mdi mdi-home"></i> 首 页</a>
+                        <li class="nav-item active" id="shouye"><a href="{% url 'index' %}"><i class="mdi mdi-home"></i>
+                            首 页</a>
                         </li>
-                        <li class="nav-item nav-item-has-subnav">
+                        <li class="nav-item nav-item-has-subnav" id='taizhang'>
                             <a href="javascript:void(0)"><i class="mdi mdi-laptop"></i> 设备台账</a>
                             <ul class="nav nav-subnav">
                                 <li><a href="{% url "equipment_parameter" 'A' '1' %}">A类设备台账</a></li>
@@ -53,8 +53,8 @@
                                 <li><a href="{% url "equipment_parameter" 'C' '1' %}">C类设备台账</a></li>
                             </ul>
                         </li>
-                        <li class="nav-item nav-item-has-subnav"><a href="{% url 'update' %}"><i class="mdi mdi-shape-square-plus"></i> 上传数据</a>
-                        {% endblock biaoti %}
+                        <li class="nav-item nav-item-has-subnav" id="update"><a href="{% url 'update' %}"><i
+                                class="mdi mdi-shape-square-plus"></i> 上传数据</a>
                     </ul>
                 </nav>
 
@@ -96,7 +96,7 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-right">
                                 <li><a href="{% url 'profile' %}"><i class="mdi mdi-account"></i> 个人信息</a></li>
-                                <li><a href=""><i class="mdi mdi-lock-outline"></i> 修改密码</a>
+                                <li><a href="{% url 'edit_pwd' %}"><i class="mdi mdi-lock-outline"></i> 修改密码</a>
                                 </li>
                                 <li><a href="javascript:void(0)"><i class="mdi mdi-delete"></i> 清空缓存</a></li>
                                 <li class="divider"></li>
@@ -250,8 +250,8 @@
                             <div class="card bg-primary">
                                 <div class="card-body clearfix">
                                     <div class="pull-right">
-                                        <p class="h6 text-white m-t-0">本日完成设备</p>
-                                        <p class="h3 text-white m-b-0">102,125.00</p>
+                                        <p class="h6 text-white m-t-0">本月未完成设备</p>
+                                        <p class="h3 text-white m-b-0">{{ month_of_count }} 台</p>
                                     </div>
                                     <div class="pull-left"><span class="img-avatar img-avatar-48 bg-translucent"><i
                                             class="mdi mdi-currency-cny fa-1-5x"></i></span></div>
@@ -290,7 +290,7 @@
                                 <div class="card-body clearfix">
                                     <div class="pull-right">
                                         <p class="h6 text-white m-t-0">测量设备总数</p>
-                                        <p class="h3 text-white m-b-0">153 条</p>
+                                        <p class="h3 text-white m-b-0">{{ shebei_count }} 台</p>
                                     </div>
                                     <div class="pull-left"><span class="img-avatar img-avatar-48 bg-translucent"><i
                                             class="mdi mdi-comment-outline fa-1-5x"></i></span></div>
@@ -312,58 +312,94 @@
                                         <table class="table table-hover">
                                             <thead>
                                             <tr>
-                                                <th>测量设备名称</th>
-                                                <th>型号</th>
-                                                <th>量程</th>
-                                                <th>精度</th>
-                                                <th>生产厂家</th>
-                                                <th>器具编号</th>
-                                                <th>本厂编号</th>
-                                                <th>检定部门</th>
-                                                <th>周期</th>
-                                                <th>检定日期</th>
-                                                <th>有效期至</th>
-                                                <th>分类</th>
-                                                <th>使用部门</th>
-                                                <th>操作</th>
+                                                <th>
+                                                    测量设备名称
+                                                </th>
+                                                <th>
+                                                    型号
+                                                </th>
+                                                <th>
+                                                    量程
+                                                </th>
+                                                <th>
+                                                    精度
+                                                </th>
+                                                <th>
+                                                    生产厂家
+                                                </th>
+                                                <th>
+                                                    器具编号
+                                                </th>
+                                                <th>
+                                                    本厂编号
+                                                </th>
+                                                <th style="width: 76px">检定部门</th>
+                                                <th style="width: 48px">周期</th>
+                                                <th style="width: 98px">检定日期</th>
+                                                <th style="width: 98px">有效期至</th>
+                                                <th style="width: 48px">分类</th>
+                                                <th>
+                                                    使用部门
+                                                </th>
+                                                <th>
+                                                    操作
+                                                </th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             {% for date in A_today_dates %}
                                                 <tr>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_name }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_model }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_range }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_precision }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.manufacturer }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_number }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_factory_number }}</td>
-                                                    <td style='text-align: center;'>{{ date.calibration_department }}</td>
-                                                    <td style='text-align: center;'>{{ date.calibration_cycle }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.calibration_time|date:"Y-m-d" }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.expire_time|date:"Y-m-d" }}</td>
-                                                    <td style='text-align: center;'>{{ date.device_type }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_user_department }}</td>
-                                                    <td><a href="{% url 'edit' date.device_factory_number %}">查看</a>
+                                                    <td>{{ date.device_name }}</td>
+                                                    <td>{{ date.device_model }}</td>
+                                                    <td>{{ date.device_range }}</td>
+                                                    <td>{{ date.device_precision }}</td>
+                                                    <td>{{ date.manufacturer }}</td>
+                                                    <td>{{ date.device_number }}</td>
+                                                    <td>{{ date.device_factory_number }}</td>
+                                                    <td>{{ date.calibration_department }}</td>
+                                                    <td>{{ date.calibration_cycle }}</td>
+                                                    <td>{{ date.calibration_time|date:"Y-m-d" }}</td>
+                                                    <td>{{ date.expire_time|date:"Y-m-d" }}</td>
+                                                    <td>{{ date.device_type }}</td>
+                                                    <td>{{ date.device_user_department }}</td>
+                                                    <td>
+                                                        <div class="btn-group">
+                                                            <a class="btn btn-xs btn-default"
+                                                               href="{% url 'edit' date.device_type date.device_factory_number %}"
+                                                               title="编辑" data-toggle="tooltip"><i
+                                                                    class="mdi mdi-pencil"></i></a>
+                                                            <a class="btn btn-xs btn-default" href="{% url 'complete' date.device_type date.device_factory_number %}" title="完成"
+                                                               data-toggle="tooltip"><i
+                                                                    class="mdi mdi-clipboard-outline"></i></a>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             {% endfor %}
                                             {% for date in B_today_dates %}
                                                 <tr>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_name }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_model }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_range }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_precision }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.manufacturer }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_number }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_factory_number }}</td>
-                                                    <td style='text-align: center;'>{{ date.calibration_department }}</td>
-                                                    <td style='text-align: center;'>{{ date.calibration_cycle }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.calibration_time|date:"Y-m-d" }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.expire_time|date:"Y-m-d" }}</td>
-                                                    <td style='text-align: center;'>{{ date.device_type }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_user_department }}</td>
-                                                    <td><a href="{% url 'edit' date.device_factory_number %}">查看</a>
+                                                    <td>{{ date.device_name }}</td>
+                                                    <td>{{ date.device_model }}</td>
+                                                    <td>{{ date.device_range }}</td>
+                                                    <td>{{ date.device_precision }}</td>
+                                                    <td>{{ date.manufacturer }}</td>
+                                                    <td>{{ date.device_number }}</td>
+                                                    <td>{{ date.device_factory_number }}</td>
+                                                    <td>{{ date.calibration_department }}</td>
+                                                    <td>{{ date.calibration_cycle }}</td>
+                                                    <td>{{ date.calibration_time|date:"Y-m-d" }}</td>
+                                                    <td>{{ date.expire_time|date:"Y-m-d" }}</td>
+                                                    <td>{{ date.device_type }}</td>
+                                                    <td>{{ date.device_user_department }}</td>
+                                                    <td>
+                                                        <div class="btn-group">
+                                                            <a class="btn btn-xs btn-default"
+                                                               href="{% url 'edit' date.device_type date.device_factory_number %}"
+                                                               title="编辑" data-toggle="tooltip"><i
+                                                                    class="mdi mdi-pencil"></i></a>
+                                                            <a class="btn btn-xs btn-default" href="{% url 'complete' date.device_type date.device_factory_number %}" title="完成"
+                                                               data-toggle="tooltip"><i
+                                                                    class="mdi mdi-clipboard-outline"></i></a>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             {% endfor %}
@@ -386,7 +422,7 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        <table class="table table-hover">
+                                        <table class="table table-hover" style="table-layout:fixed">
                                             <thead>
                                             <tr>
                                                 <th>测量设备名称</th>
@@ -396,11 +432,11 @@
                                                 <th>生产厂家</th>
                                                 <th>器具编号</th>
                                                 <th>本厂编号</th>
-                                                <th>检定部门</th>
-                                                <th>周期</th>
-                                                <th>检定日期</th>
-                                                <th>有效期至</th>
-                                                <th>分类</th>
+                                                <th style="width: 76px">检定部门</th>
+                                                <th style="width: 48px">周期</th>
+                                                <th style="width: 98px">检定日期</th>
+                                                <th style="width: 98px">有效期至</th>
+                                                <th style="width: 48px">分类</th>
                                                 <th>使用部门</th>
                                                 <th>操作</th>
                                             </tr>
@@ -408,39 +444,57 @@
                                             <tbody>
                                             {% for date in A_day_7_dates %}
                                                 <tr>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_name }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_model }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_range }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_precision }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.manufacturer }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_number }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_factory_number }}</td>
-                                                    <td style='text-align: center;'>{{ date.calibration_department }}</td>
-                                                    <td style='text-align: center;'>{{ date.calibration_cycle }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.calibration_time|date:"Y-m-d" }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.expire_time|date:"Y-m-d" }}</td>
-                                                    <td style='text-align: center;'>{{ date.device_type }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_user_department }}</td>
-                                                    <td><a href="{% url 'edit' date.device_factory_number %}">查看</a>
+                                                    <td>{{ date.device_name }}</td>
+                                                    <td>{{ date.device_model }}</td>
+                                                    <td>{{ date.device_range }}</td>
+                                                    <td>{{ date.device_precision }}</td>
+                                                    <td>{{ date.manufacturer }}</td>
+                                                    <td>{{ date.device_number }}</td>
+                                                    <td>{{ date.device_factory_number }}</td>
+                                                    <td>{{ date.calibration_department }}</td>
+                                                    <td>{{ date.calibration_cycle }}</td>
+                                                    <td>{{ date.calibration_time|date:"Y-m-d" }}</td>
+                                                    <td>{{ date.expire_time|date:"Y-m-d" }}</td>
+                                                    <td>{{ date.device_type }}</td>
+                                                    <td>{{ date.device_user_department }}</td>
+                                                    <td>
+                                                        <div class="btn-group">
+                                                            <a class="btn btn-xs btn-default"
+                                                               href="{% url 'edit' date.device_type date.device_factory_number %}"
+                                                               title="编辑" data-toggle="tooltip"><i
+                                                                    class="mdi mdi-pencil"></i></a>
+                                                            <a class="btn btn-xs btn-default" href="{% url 'complete' date.device_type date.device_factory_number %}" title="完成"
+                                                               data-toggle="tooltip"><i
+                                                                    class="mdi mdi-clipboard-outline"></i></a>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             {% endfor %}
                                             {% for date in B_day_7_dates %}
                                                 <tr>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_name }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_model }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_range }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_precision }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.manufacturer }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_number }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_factory_number }}</td>
-                                                    <td style='text-align: center;'>{{ date.calibration_department }}</td>
-                                                    <td style='text-align: center;'>{{ date.calibration_cycle }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.calibration_time|date:"Y-m-d" }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.expire_time|date:"Y-m-d" }}</td>
-                                                    <td style='text-align: center;'>{{ date.device_type }}</td>
-                                                    <td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{ date.device_user_department }}</td>
-                                                    <td><a href="{% url 'edit' date.device_factory_number %}">查看</a>
+                                                    <td>{{ date.device_name }}</td>
+                                                    <td>{{ date.device_model }}</td>
+                                                    <td>{{ date.device_range }}</td>
+                                                    <td>{{ date.device_precision }}</td>
+                                                    <td>{{ date.manufacturer }}</td>
+                                                    <td>{{ date.device_number }}</td>
+                                                    <td>{{ date.device_factory_number }}</td>
+                                                    <td>{{ date.calibration_department }}</td>
+                                                    <td>{{ date.calibration_cycle }}</td>
+                                                    <td>{{ date.calibration_time|date:"Y-m-d" }}</td>
+                                                    <td>{{ date.expire_time|date:"Y-m-d" }}</td>
+                                                    <td>{{ date.device_type }}</td>
+                                                    <td>{{ date.device_user_department }}</td>
+                                                    <td>
+                                                        <div class="btn-group">
+                                                            <a class="btn btn-xs btn-default"
+                                                               href="{% url 'edit' date.device_type date.device_factory_number %}"
+                                                               title="编辑" data-toggle="tooltip"><i
+                                                                    class="mdi mdi-pencil"></i></a>
+                                                            <a class="btn btn-xs btn-default" href="{% url 'complete' date.device_type date.device_factory_number %}" title="完成"
+                                                               data-toggle="tooltip"><i
+                                                                    class="mdi mdi-clipboard-outline"></i></a>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             {% endfor %}
@@ -459,7 +513,14 @@
         {% endblock content %}
     </div>
 </div>
-
+<style>
+    table thead tr th, table tbody tr td {
+        text-align: center;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+</style>
 
 </body>
 </html>

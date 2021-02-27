@@ -5,29 +5,23 @@
 {% endblock include-css %}
 
 {% block title %}
-
-    B类设备台账
+    {% if shebei_type == 'A' %}
+        A类设备台账
+    {% elif shebei_type == 'B' %}
+        B类设备台账
+    {% else %}
+        C类设备台账
+    {% endif %}
 {% endblock title %}
-{% block biaoti %}
-    <li class="nav-item nav-item-has-subnav"><a href="{% url 'index' %}"><i class="mdi mdi-home"></i> 首 页</a>
-    </li>
-    <li class="nav-item nav-item-has-subnav active">
-        <a href="javascript:void(0)"><i class="mdi mdi-laptop"></i> 设备台账</a>
-        <ul class="nav nav-subnav">
-            <li><a href="{% url "equipment_parameter" 'A' '1' %}">A类设备台账</a></li>
-            <li><a href="{% url "equipment_parameter" 'B' '1' %}">B类设备台账</a></li>
-            <li><a href="{% url "equipment_parameter" 'C' '1' %}">C类设备台账</a></li>
-        </ul>
-    </li>
-    <li class="nav-item nav-item-has-subnav"><a href="{% url 'update' %}"><i class="mdi mdi-shape-square-plus"></i> 上传数据</a>
-{% endblock biaoti %}
+
 {% block content %}
     <main class="lyear-layout-content">
 
         <div class="container-fluid">
             <div class="card-toolbar clearfix">
-                <form class="pull-right search-bar"  method="post" action="{% url "equipment_parameter" 'B' '1' %}" class="navbar-form navbar-right"
-                          role="form">
+                <form class="pull-right search-bar" method="post" action="{% url "equipment_parameter" 'B' '1' %}"
+                      class="navbar-form navbar-right"
+                      role="form">
                     <div class="input-group" style="margin-right: 60px">
                         <div class="input-group-btn">
                             {% csrf_token %}
@@ -42,8 +36,13 @@
                 </form>
                 <div class="toolbar-btn-action">
                     <a class="btn btn-primary m-r-5" href="#!"><i class="mdi mdi-plus"></i> 新增</a>
-                    <a class="btn btn-success m-r-5" href="#!"><i class="mdi mdi-check"></i> 启用</a>
-                    <a class="btn btn-warning m-r-5" href="#!"><i class="mdi mdi-block-helper"></i> 禁用</a>
+                    {% if shebei_type != 'C' %}
+                    <a class="btn btn-success m-r-5"
+                       onclick="document.getElementById('my_form').submit();return false;"><i class="mdi mdi-check"></i>
+                        完成</a>
+                    {% endif %}
+                    <a class="btn btn-warning m-r-5" href="#!"><i class="mdi mdi-server-remove"></i> 闲置</a>
+                    <a class="btn btn-dark m-r-5" href="#!"><i class="mdi mdi-block-helper"></i> 报废</a>
                     <a class="btn btn-danger" href="#!"><i class="mdi mdi-window-close"></i> 删除</a>
                 </div>
             </div>
@@ -71,38 +70,50 @@
                     <th>操作</th>
                 </tr>
                 </thead>
-                <tbody>
-                {% for date in dates %}
-                    <tr>
-                        <td>
-                            <label class="lyear-checkbox checkbox-primary">
-                                <input type="checkbox" name="ids[]"
-                                       value="{{ date.device_factory_number }}"><span></span>
-                            </label>
-                        </td>
-                        <td>{{ date.device_name }}</td>
-                        <td>{{ date.device_model }}</td>
-                        <td>{{ date.device_range }}</td>
-                        <td>{{ date.device_precision }}</td>
-                        <td>{{ date.manufacturer }}</td>
-                        <td>{{ date.device_number }}</td>
-                        <td>{{ date.device_factory_number }}</td>
-                        <td>{{ date.calibration_department }}</td>
-                        <td>{{ date.calibration_time|date:"Y-m-d" }}</td>
-                        <td>{{ date.expire_time|date:"Y-m-d" }}</td>
-                        <td>{{ date.device_user_department }}</td>
-                        <td>{{ date.node }}</td>
-                        <td>
-                            <div class="btn-group">
-                                <a class="btn btn-xs btn-default" href="{% url 'edit' date.device_type date.device_factory_number %}"
-                                   title="编辑" data-toggle="tooltip"><i class="mdi mdi-pencil"></i></a>
-                                <a class="btn btn-xs btn-default" href="#!" title="完成" data-toggle="tooltip"><i
-                                        class="mdi mdi-clipboard-outline"></i></a>
-                            </div>
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
+                <form id="my_form" method="post" action="{% url 'completes' %}">
+                    {% csrf_token %}
+                    <tbody>
+
+
+                    {% for date in dates %}
+                        <tr>
+                            <td>
+                                <label class="lyear-checkbox checkbox-primary">
+                                    <input type="checkbox" name="hobby"
+                                           value="{{ date.device_type }}:{{ date.device_factory_number }}"><span></span>
+                                </label>
+                            </td>
+                            <td>{{ date.device_name }}</td>
+                            <td>{{ date.device_model }}</td>
+                            <td>{{ date.device_range }}</td>
+                            <td>{{ date.device_precision }}</td>
+                            <td>{{ date.manufacturer }}</td>
+                            <td>{{ date.device_number }}</td>
+                            <td>{{ date.device_factory_number }}</td>
+                            <td>{{ date.calibration_department }}</td>
+                            <td>{{ date.calibration_time|date:"Y-m-d" }}</td>
+                            <td>{{ date.expire_time|date:"Y-m-d" }}</td>
+                            <td>{{ date.device_user_department }}</td>
+                            <td>{{ date.node }}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a class="btn btn-xs btn-default"
+                                       href="{% url 'edit' date.device_type date.device_factory_number %}"
+                                       title="编辑" data-toggle="tooltip"><i class="mdi mdi-pencil"></i></a>
+                                    {% if shebei_type != 'C' %}
+                                        <a class="btn btn-xs btn-default"
+                                           href="{% url 'complete' date.device_type date.device_factory_number %}"
+                                           title="完成"
+                                           data-toggle="tooltip"><i
+                                                class="mdi mdi-clipboard-outline"></i></a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </form>
             </table>
             <nav aria-label="Page navigation">
                 <ul class="pagination">
@@ -122,6 +133,14 @@
 {% endblock content %}
 
 {% block include-js %}
+    <script>
+        $(function () {
+            $('#shouye').removeClass('active');
+            $('#update').removeClass('active');
+            $('#taizhang').addClass('active');
 
+        })
+
+    </script>
 {% endblock include-js %}
 

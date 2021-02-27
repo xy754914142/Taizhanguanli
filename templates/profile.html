@@ -8,20 +8,7 @@
 
     个人信息
 {% endblock title %}
-{% block biaoti %}
-    <li class="nav-item active"><a href="{% url 'index' %}"><i class="mdi mdi-home"></i> 首 页</a>
-    </li>
-    <li class="nav-item nav-item-has-subnav">
-        <a href="javascript:void(0)"><i class="mdi mdi-laptop"></i> 设备台账</a>
-        <ul class="nav nav-subnav">
-            <li><a href="{% url "equipment_parameter" 'A' '1' %}">A类设备台账</a></li>
-            <li><a href="{% url "equipment_parameter" 'B' '1' %}">B类设备台账</a></li>
-            <li><a href="{% url "equipment_parameter" 'C' '1' %}">C类设备台账</a></li>
-        </ul>
-    </li>
-    <li class="nav-item nav-item-has-subnav">
-    <a href="{% url 'update' %}"><i class="mdi mdi-shape-square-plus"></i> 上传数据</a>
-{% endblock biaoti %}
+
 {% block content %}
     <!--页面主要内容-->
     <main class="lyear-layout-content">
@@ -75,14 +62,15 @@
         $('#submit').click(function () {
             var token = $.cookie('csrftoken');
 
-
+            var username = $("#username").val();
             var nickname = $("#nickname").val();
             var email = $("#email").val();
-            var nickname = $("#remark").val();
+            var abstract = $("#remark").val();
             var formdata = new FormData();
+            formdata.append('username', username);
             formdata.append('nickname', nickname);
             formdata.append('email', email);
-            formdata.append('nickname', nickname);
+            formdata.append('abstract', abstract);
             $.ajax({
                 url: '/profile.html',
                 type: 'POST',
@@ -97,16 +85,16 @@
                         // 假设ajax提交操作
                         setTimeout(function () {
                             lightyear.loading('hide');
-                            lightyear.notify('上传成功~', 'success', 3000);
+                            lightyear.notify('修改成功,正在跳转~', 'success', 3000);
                         }, 1e3);
-
+                        setTimeout('location.reload()',2000);
                     } else {
                         console.log(args.status);
                         lightyear.loading('show');
                         // 假设ajax提交操作
                         setTimeout(function () {
                             lightyear.loading('hide');
-                            lightyear.notify('上传失败，请稍后再试~' + args.message, 'danger', 100);
+                            lightyear.notify('修改失败，请稍后再试~' + args.message, 'danger', 100);
                         }, 1e3)
                     }
                 }

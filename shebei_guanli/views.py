@@ -10,6 +10,7 @@ from django.utils.decorators import method_decorator
 from django.db.models import Q
 import datetime
 import json
+from dateutil.relativedelta import relativedelta
 
 
 class MyForm(Form):
@@ -182,7 +183,7 @@ class Equipment_parameter(View):
         elif shebei_type == 'C':
             class_list = C_Taizhang.objects.all()[page_info.start():page_info.end()]
         return render(request, 'shebei_guanli/shebei_index.html',
-                      {'dates': class_list, 'page_info': page_info, 'ig': 0})
+                      {'dates': class_list, 'page_info': page_info, 'shebei_type': shebei_type})
 
     def post(self, request, shebei_type, page):
         seacher_text = request.POST.get('search_text')
@@ -241,7 +242,7 @@ class Edit(View):
 
         except Exception as e:
             ret['status'] = False
-            ret['message'] = message_erro
+            ret['message'] = str(e)
 
         return HttpResponse(json.dumps(ret))
 
@@ -249,17 +250,34 @@ class Edit(View):
 @login
 def index(request):
     v = request.session.get('userinfo')
-    user_info = UserInfo.objects.filter(username=v['username'],password=v['password']).first()
+    user_info = UserInfo.objects.filter(username=v['username'], password=v['password']).first()
     now_data = datetime.datetime.now().strftime('%Y-%m-%d')
     add_day = datetime.datetime.now() + datetime.timedelta(days=7)
     A_today_dates = B_Taizhang.objects.filter(expire_time=now_data)
     B_today_dates = A_Taizhang.objects.filter(expire_time=now_data)
 
-    A_day_7_dates = A_Taizhang.objects.filter(expire_time=add_day.strftime('%Y-%m-%d'))
-    B_day_7_dates = B_Taizhang.objects.filter(expire_time=add_day.strftime('%Y-%m-%d'))
+    A_day_7_dates = A_Taizhang.objects.filter(expire_time__lt=add_day.strftime('%Y-%m-%d'))
+    B_day_7_dates = B_Taizhang.objects.filter(expire_time__lt=add_day.strftime('%Y-%m-%d'))
+
+    shebei_count = A_Taizhang.objects.count() + B_Taizhang.objects.count() + C_Taizhang.objects.count()
+
+    def last_day_of_month(any_day):
+        """
+        获取获得一个月中的最后一天
+        :param any_day: 任意日期
+        :return: string
+        """
+        next_month = any_day.replace(day=28) + datetime.timedelta(days=4)  # this will never fail
+        return next_month - datetime.timedelta(days=next_month.day)
+
+    last_day = last_day_of_month(datetime.datetime.now())
+    month_of_count = A_Taizhang.objects.filter(
+        expire_time__lt=last_day.strftime('%Y-%m-%d')).count() + B_Taizhang.objects.filter(
+        expire_time__lt=last_day.strftime('%Y-%m-%d')).count()
     return render(request, 'index.html',
                   {'A_today_dates': A_today_dates, 'B_today_dates': B_today_dates, 'A_day_7_dates': A_day_7_dates,
-                   'B_day_7_dates': B_day_7_dates,'user_info':user_info})
+                   'B_day_7_dates': B_day_7_dates, 'user_info': user_info, 'shebei_count': shebei_count,
+                   'month_of_count': month_of_count})
 
 
 @login
@@ -271,11 +289,106 @@ def test(request):
         print(r)
         return HttpResponse(r)
 
+
 @method_decorator(login, name='dispatch')
 class Profile(View):
-    def get(self,request):
+    def get(self, request):
         v = request.session.get('userinfo')
         user_info = UserInfo.objects.filter(username=v['username'], password=v['password']).first()
-        return render(request,'profile.html',{'user_info':user_info})
-    def post(self,request):
-        pass
+        return render(request, 'profile.html', {'user_info': user_info})
+
+    def post(self, request):
+        ret = {'status': True, 'message': None}
+        message_erro = "处理erro"
+        try:
+            username = request.POST.get('username')
+            nickname = request.POST.get('nickname')
+            email = request.POST.get('email')
+            abstract = request.POST.get('abstract')
+            UserInfo.objects.filter(username=username).update(nickname=nickname, email=email, abstract=abstract)
+        except Exception as e:
+            ret['status'] = False
+            ret['message'] = str(e)
+
+        return HttpResponse(json.dumps(ret))
+
+
+@method_decorator(login, name='dispatch')
+class Edit_pwd(View):
+    def get(self, request):
+        return render(request, 'edit_pwd.html')
+
+    def post(self, request):
+        ret = {'status': True, 'message': None}
+        message_erro = "处理erro"
+        try:
+            old_password = request.POST.get('old_password')
+            new_password = request.POST.get('new_password')
+            confirm_password = request.POST.get('confirm_password')
+            v = request.session.get('userinfo')
+            user_info = UserInfo.objects.filter(username=v['username'], password=v['password']).first()
+            if user_info.password == old_password and user_info.email == confirm_password:
+                UserInfo.objects.filter(username=v['username'], password=v['password']).update(password=new_password)
+            else:
+                raise Exception("密码输入错误，或邮箱错误！")
+        except Exception as e:
+            ret['status'] = False
+            ret['message'] = str(e)
+
+        return HttpResponse(json.dumps(ret))
+
+
+@login
+def complete(request, shebei_type, editnumber):
+    if shebei_type == 'A':
+        v = A_Taizhang.objects.filter(device_factory_number=editnumber).first()
+    elif shebei_type == 'B':
+        v = B_Taizhang.objects.filter(device_factory_number=editnumber).first()
+    now_time = datetime.datetime.now()
+    calibration_time = now_time.strftime('%Y-%m-%d')
+    if v.calibration_cycle == '半年':
+        expire_time = now_time + relativedelta(months=+6) - relativedelta(days=+1)
+        print(expire_time)
+    elif v.calibration_cycle == '1年':
+        expire_time = now_time + relativedelta(years=+1) - relativedelta(days=+1)
+        print(expire_time)
+    elif v.calibration_cycle == '2年':
+        expire_time = now_time + relativedelta(years=+2) - relativedelta(days=+1)
+        print(expire_time)
+    if shebei_type == 'A':
+        A_Taizhang.objects.filter(device_factory_number=editnumber).update(calibration_time=calibration_time,
+                                                                           expire_time=expire_time)
+    elif shebei_type == 'B':
+        B_Taizhang.objects.filter(device_factory_number=editnumber).update(calibration_time=calibration_time,
+                                                                           expire_time=expire_time)
+    return redirect(reverse('equipment_parameter', kwargs={'shebei_type': shebei_type, 'page': 1}))
+
+
+@login
+def completes(request):
+    v = request.POST.getlist('hobby')
+    shebei_type = 'B'
+    for dev in v:
+        shebei_type, editnumber = dev.split(':')
+        if shebei_type == 'A':
+            v = A_Taizhang.objects.filter(device_factory_number=editnumber).first()
+        elif shebei_type == 'B':
+            v = B_Taizhang.objects.filter(device_factory_number=editnumber).first()
+        now_time = datetime.datetime.now()
+        calibration_time = now_time.strftime('%Y-%m-%d')
+        if v.calibration_cycle == '半年':
+            expire_time = now_time + relativedelta(months=+6) - relativedelta(days=+1)
+            print(expire_time)
+        elif v.calibration_cycle == '1年':
+            expire_time = now_time + relativedelta(years=+1) - relativedelta(days=+1)
+            print(expire_time)
+        elif v.calibration_cycle == '2年':
+            expire_time = now_time + relativedelta(years=+2) - relativedelta(days=+1)
+            print(expire_time)
+        if shebei_type == 'A':
+            A_Taizhang.objects.filter(device_factory_number=editnumber).update(calibration_time=calibration_time,
+                                                                               expire_time=expire_time)
+        elif shebei_type == 'B':
+            B_Taizhang.objects.filter(device_factory_number=editnumber).update(calibration_time=calibration_time,
+                                                                               expire_time=expire_time)
+    return redirect(reverse('equipment_parameter', kwargs={'shebei_type': shebei_type, 'page': 1}))

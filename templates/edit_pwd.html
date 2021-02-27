@@ -1,0 +1,100 @@
+{% extends "index.html" %}
+
+{% block include-css %}
+
+{% endblock include-css %}
+
+{% block title %}
+
+    密码修改
+{% endblock title %}
+
+{% block content %}
+    <!--页面主要内容-->
+    <main class="lyear-layout-content">
+
+      <div class="container-fluid">
+
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-body">
+
+                <form method="post" action="#!" class="site-form">
+                    {% csrf_token %}
+                  <div class="form-group">
+                    <label for="old-password">旧密码</label>
+                    <input type="password" class="form-control" name="oldpwd" id="old_password" placeholder="输入账号的原登录密码">
+                  </div>
+                  <div class="form-group">
+                    <label for="new-password">新密码</label>
+                    <input type="password" class="form-control" name="newpwd" id="new_password" placeholder="输入新的密码">
+                  </div>
+                  <div class="form-group">
+                    <label for="confirm-password">确认新密码</label>
+                    <input type="password" class="form-control" name="confirmpwd" id="confirm_password" placeholder="请输入正确的邮箱地址">
+                  </div>
+                  <button type="button" class="btn btn-primary" id="submit">修改密码</button>
+                </form>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+    <!--End 页面主要内容-->
+    <script>
+        $('#submit').click(function () {
+            var token = $.cookie('csrftoken');
+
+            var old_password = $("#old_password").val();
+            var new_password = $("#new_password").val();
+            var confirm_password = $("#confirm_password").val();
+
+            var formdata = new FormData();
+            formdata.append('old_password', old_password);
+            formdata.append('new_password', new_password);
+            formdata.append('confirm_password', confirm_password);
+            $.ajax({
+                url: '/edit_pwd.html',
+                type: 'POST',
+                data: formdata,
+                dataType: 'JSON',
+                processData: false, // 不处理数据( 必须有)
+                contentType: false,  //不设置内容类型 ( 必须要)
+                headers: {'X-CSRFToken': token},
+                success: function (args) {
+                    if (args.status) {
+                        lightyear.loading('show');
+                        // 假设ajax提交操作
+                        setTimeout(function () {
+                            lightyear.loading('hide');
+                            lightyear.notify('修改成功,正在跳转~', 'success', 3000);
+                        }, 1e3);
+                        setTimeout('location.reload()',2000);
+                    } else {
+                        console.log(args.status);
+                        lightyear.loading('show');
+                        // 假设ajax提交操作
+                        setTimeout(function () {
+                            lightyear.loading('hide');
+                            lightyear.notify('修改失败，请稍后再试~' + args.message, 'danger', 100);
+                        }, 1e3)
+                    }
+                }
+            })
+
+        })
+    </script>
+
+{% endblock content %}
+
+{% block include-js %}
+
+{% endblock include-js %}
+    
+
