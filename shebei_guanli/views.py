@@ -11,6 +11,11 @@ from django.db.models import Q
 import datetime
 import json
 from dateutil.relativedelta import relativedelta
+from django.utils.timezone import make_aware
+
+
+
+
 
 
 class MyForm(Form):
@@ -261,6 +266,7 @@ def index(request):
 
     shebei_count = A_Taizhang.objects.count() + B_Taizhang.objects.count() + C_Taizhang.objects.count()
 
+
     def last_day_of_month(any_day):
         """
         获取获得一个月中的最后一天
@@ -271,13 +277,29 @@ def index(request):
         return next_month - datetime.timedelta(days=next_month.day)
 
     last_day = last_day_of_month(datetime.datetime.now())
-    month_of_count = A_Taizhang.objects.filter(
-        expire_time__lt=last_day.strftime('%Y-%m-%d')).count() + B_Taizhang.objects.filter(
-        expire_time__lt=last_day.strftime('%Y-%m-%d')).count()
+
+    startday = datetime.datetime(year=2021,month=2,day=1).strftime('%Y-%m-%d')
+
+    dangyueAleisum = A_Taizhang.objects.filter(expire_time__range=(startday,last_day))
+    dangyueBleisum = B_Taizhang.objects.filter(expire_time__range=(startday,last_day))
+    now_month = 'weiwancheng_'+ str(datetime.datetime.now().month)
+    now_wanmonth = 'wancheng_'+ str(datetime.datetime.now().month)
+    v = Meiyuewanchengshu.objects.filter(now_year=str(datetime.datetime.now().year))
+    if v:
+        v.update(now_month=dangyueAleisum.count() + dangyueBleisum.count())
+    else:
+        Meiyuewanchengshu.objects.create(now_year=str(datetime.datetime.now().year))
+        Meiyuewanchengshu.objects.filter(now_year=str(datetime.datetime.now().year)).update(now_month=dangyueAleisum.count() + dangyueBleisum.count())
+    # str(datetime.datetime.now().year)
+    # shebeimeiyuewanchengshu[datetime.datetime.now().month][0] = dangyueAleisum.count() + dangyueBleisum.count()
+    # qunianwanchengsum = 0
+    # for i in range(len(shebeimeiyuewanchengshu)):
+    #     qunianwanchengsum += shebeimeiyuewanchengshu[datetime.datetime.now().month][1]
+
     return render(request, 'index.html',
                   {'A_today_dates': A_today_dates, 'B_today_dates': B_today_dates, 'A_day_7_dates': A_day_7_dates,
                    'B_day_7_dates': B_day_7_dates, 'user_info': user_info, 'shebei_count': shebei_count,
-                   'month_of_count': month_of_count})
+                   })
 
 
 @login
@@ -361,6 +383,7 @@ def complete(request, shebei_type, editnumber):
     elif shebei_type == 'B':
         B_Taizhang.objects.filter(device_factory_number=editnumber).update(calibration_time=calibration_time,
                                                                            expire_time=expire_time)
+    shebeimeiyuewanchengshu[datetime.datetime.now().month][1] += 1
     return redirect(reverse('equipment_parameter', kwargs={'shebei_type': shebei_type, 'page': 1}))
 
 
@@ -393,6 +416,7 @@ def completes(request):
             elif shebei_type == 'B':
                 B_Taizhang.objects.filter(device_factory_number=editnumber).update(calibration_time=calibration_time,
                                                                                    expire_time=expire_time)
+            shebeimeiyuewanchengshu[datetime.datetime.now().month][1] += 1
 
     except Exception as e:
         ret['status'] = False

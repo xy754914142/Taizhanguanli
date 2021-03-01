@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5ae609db-282e-42d2-832c-77feea09e6a1" name="默认的" comment="1">
-      <change afterPath="$PROJECT_DIR$/static/js/shebei_index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Taizhanguanli.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Taizhanguanli.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="5ae609db-282e-42d2-832c-77feea09e6a1" name="默认的" comment="2021-2-27home">
+      <change afterPath="$PROJECT_DIR$/shebei_guanli/migrations/0003_meiyuewanchengshu.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/shebei_guanli/migrations/0004_auto_20210228_1258.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/shebei_guanli/migrations/0005_meiyuewanchengshu_now_year.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Taizhanguanli/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/Taizhanguanli/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shebei_guanli/templates/shebei_guanli/shebei_index.html" beforeDir="false" afterPath="$PROJECT_DIR$/shebei_guanli/templates/shebei_guanli/shebei_index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shebei_guanli/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/shebei_guanli/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/shebei_guanli/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/shebei_guanli/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,6 +104,7 @@
       <workItem from="1613215094517" duration="6464000" />
       <workItem from="1613561401248" duration="2523000" />
       <workItem from="1614250258266" duration="2445000" />
+      <workItem from="1614484764444" duration="5957000" />
     </task>
     <task id="LOCAL-00001" summary="1">
       <created>1613563457960</created>
@@ -111,7 +113,14 @@
       <option name="project" value="LOCAL" />
       <updated>1613563457960</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="2021-2-27home">
+      <created>1614430418432</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1614430418447</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -132,6 +141,7 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="1" />
-    <option name="LAST_COMMIT_MESSAGE" value="1" />
+    <MESSAGE value="2021-2-27home" />
+    <option name="LAST_COMMIT_MESSAGE" value="2021-2-27home" />
   </component>
 </project>
